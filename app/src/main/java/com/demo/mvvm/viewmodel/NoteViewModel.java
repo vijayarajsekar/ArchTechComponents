@@ -6,10 +6,13 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 
 import com.demo.mvvm.database.Note;
 import com.demo.mvvm.database.NoteDao;
 import com.demo.mvvm.database.NoteDatabse;
+
+import java.util.List;
 
 public class NoteViewModel extends AndroidViewModel {
 
@@ -18,15 +21,22 @@ public class NoteViewModel extends AndroidViewModel {
     private NoteDao mNoteDao;
     private NoteDatabse mNoteDatabse;
 
+    private LiveData<List<Note>> mAllNote;
+
     public NoteViewModel(@NonNull Application application) {
         super(application);
 
         mNoteDatabse = NoteDatabse.getInstance(application);
         mNoteDao = mNoteDatabse.mNoteDao();
+        mAllNote = mNoteDao.getAllNote();
     }
 
     public void insert(Note _note) {
         new InsertAsync(mNoteDao).execute(_note);
+    }
+
+    public LiveData<List<Note>> getAllNote() {
+        return mAllNote;
     }
 
     @Override
